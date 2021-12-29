@@ -348,6 +348,11 @@ cervical_data_subset["Age_segment"] <- cut(cervical_data_subset$Age, breaks = c(
 # 4. Análisis de los datos
 ******
 
+
+
+******
+# 5. Representación de los resultados
+******
 ##Representación gráfica
 Para entender los datos más en profundidad procedemos a realizar varias representaciones gráficas para obtener una visión más general de como se distribuye la información, de este modo nos será más sencillo identificar la naturaleza de los datos.
 
@@ -368,11 +373,6 @@ Representación de los grupos de edad en base a si son fumadores o no:
 
 ggplot(data=cervical_data_subset[1:rows,],aes(x=IUD ,fill=Age_segment))+geom_bar()
 ```
-
-******
-# 5. Representación de los resultados
-******
-
 
 ******
 # 6. Resolución de problemas
