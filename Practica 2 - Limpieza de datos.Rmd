@@ -332,6 +332,9 @@ Filtramos todos los valores con el registro IUD ='?' y les aplicamos el valor NA
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
 cervical_data_subset$IUD[cervical_data_subset$IUD=="?"] <- "NA"
+cervical_data_subset$IUD..years.[cervical_data_subset$IUD..years.=="?"] <- "0"
+cervical_data_subset$IUD..years.<-as.integer(cervical_data_subset$IUD..years.)
+
 ```
 
 ##Identificación y tratamiento de valores extremos
@@ -348,7 +351,70 @@ cervical_data_subset["Age_segment"] <- cut(cervical_data_subset$Age, breaks = c(
 # 4. Análisis de los datos
 ******
 
+##Selección de los datos
 
+Precisamos un primer set de datos para continuar con los análisis escogemos las variables más significativas como edad segmentada, variables relacionadas con el tabaco, los metodos hormonales y dispositivos intrauterinos Y 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+analisis_subset<-cervical_data_subset[c(1,25,5:13)]
+str(analisis_subset)
+```
+A continuación pasamos a realizar una muestra de homogeneidad entre los grupos de edad y los años consecutivos fumandos.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+ggplot(data = analisis_subset, aes(x = Age_segment, y = Smokes..years., colour = Age_segment)) +
+  geom_boxplot() +
+  geom_point() +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+ 
+A la vista de los resultados, los grupos con tamaños muestrales pequeños tienen mayor varianza, también es lógico pensar que a mayor edad más años consecutivos ha estado fumando la persona. Vemos como los tres grupos de 58 a 84 disponen de un tamaño muestral más grande.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+aggregate(Smokes..years.~Age_segment, data = analisis_subset, FUN = var)
+
+```
+A la vista de los resultados podemos ver como la hipótesis del apartado anterior era cierta y existen grupos con mucha más cantidad de muestras y valor acumulado
+
+A continuación utilizamos el test de Levene.Se caracteriza, además de por poder comparar 2 o más poblaciones, por permitir elegir entre diferentes estadísticos de centralidad :mediana (por defecto), media, media truncada. Esto es importante a la hora de contrastar la homocedasticidad dependiendo de si los grupos se distribuyen de forma normal o no.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+library(car)
+data("analisis_subset")
+leveneTest(y = analisis_subset$Smokes..years., group = analisis_subset$Age_segment , center = "median")
+
+```
+
+El test de Levene Test encuentra diferencias significativas entre los diferentes grupos 
+
+
+
+
+A continuación análizamos los grupos de edad con los años de utilización de un dispositivo intra uterino.
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+ggplot(data = analisis_subset, aes(x = Age_segment, y = IUD..years., colour = Age_segment)) +
+  geom_boxplot() +
+  geom_point() +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+En este caso vemos como las distribuciones son similares al caso anterior. aunque a priorí parecen más homogeneas en el resto de grupos excepto en los extremos.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+data("analisis_subset")
+leveneTest(y = analisis_subset$IUD..years., group = analisis_subset$Age_segment , center = "median")
+
+```
 
 ******
 # 5. Representación de los resultados
