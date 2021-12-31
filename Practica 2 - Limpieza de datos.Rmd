@@ -416,6 +416,42 @@ leveneTest(y = analisis_subset$IUD..years., group = analisis_subset$Age_segment 
 
 ```
 
+##Supuesto de normalidad
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+qqnorm( analisis_subset$Age ) # la nube de puntos 
+qqline( analisis_subset$Age ) # la recta
+```
+
+##Contraste de hipótesis
+Realizamos un contraste de hipótesis para un valor de media de edad de 27 años.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+t.test( analisis_subset$Age,
+        mu = 27, 
+        alternative = "two.sided" ) # contraste bilateral
+```
+Con un valor de p-value = 0.536 mayor que 0.05 no podemos rechazar la hipótesis nula.
+
+
+##Supuesto de homocedasticidad
+
+En este caso llevamos a cabo el supuesto entre personas fumadoras o no fumadoras
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+Fumadores <- analisis_subset$Age[analisis_subset$Smokes == 1]
+NoFumadores <- analisis_subset$Age[analisis_subset$Smokes == 0]
+
+var.test( Fumadores, NoFumadores ) # contraste de homogeneidad de varianzas
+
+```
+
+Con un valor de p-value = 0,003878 menor que 0,05 podemos rechazar la hipótesis nula, por lo tanto no existe homogeneidad de varianzas.
+
 ******
 # 5. Representación de los resultados
 ******
