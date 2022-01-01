@@ -3,17 +3,12 @@ title: 'Tipología y ciclo de vida de los datos: Practica 2'
 author: "Autor: Borja López Gómez y Sergio Beltrán Nuez"
 date: "Diciembre 2021"
 output:
-  pdf_document:
-    highlight: zenburn
-    toc: yes
   html_document:
     highlight: default
-    number_sections: yes
+    number_sections: no
     theme: cosmo
     toc: yes
     toc_depth: 2
-    includes:
-      in_header: Práctica 2-header.html
   word_document: default
 ---
 
@@ -91,22 +86,22 @@ Media.
 
 \newpage 
 ******
-# 1.Descripción del dataset
+# 1. Descripción del dataset
 ******
 
-##Origen de datos
+## Origen de datos
 
 Para la realización de esta practica se propone la utilización del dataset Cervical Cancer Risk Classification, un dataset que recoge diferentes marcadores relacionados con la aparición del cancer de cuello uterino.
 El dataset puede encontrarse tanto en el enlace de Kaggle https://www.kaggle.com/loveall/cervical-cancer-risk-classification como en el repositorio UCI (https://archive.ics.uci.edu/ml/datasets/Cervical+cancer+%28Risk+Factors%29) 
 Se trata de un dataset de origen público publicado por el Hospital Universitario de Caracas, Venezuela.
 
 
-##Motivación
+## Motivación
 
-Pese a que se trata de unos de los canceres más prevenibles y el número de nuevos casos ha disminuido constantenmente en los últimos años, aproximadamente 4000 muejeres en Estado Unidos y 300000 en todo el mundo son diagnosticadas cada año. La mortalidad provocada por este cancer se ha reducido de manera notable gracias a las pruebas de cribado. No obstante, numerosos estudios confirman que el nivel de probreza y otros factores socioeconómicos están relacionados con bajas tasas de cribado. Por todo esto consideramos que se trata de un tema de actualidad que requiere de mucha colaboración ya que entender bien la información de que disponemos puede facilitar el estudio de futuros trabajos.
+Pese a que se trata de unos de los canceres más prevenibles y el número de nuevos casos ha disminuido constantenmente en los últimos años, aproximadamente 4000 mujeres en Estado Unidos y 300000 en todo el mundo son diagnosticadas cada año. La mortalidad provocada por este cancer se ha reducido de manera notable gracias a las pruebas de cribado. No obstante, numerosos estudios confirman que el nivel de probreza y otros factores socioeconómicos están relacionados con bajas tasas de cribado. Por todo esto consideramos que se trata de un tema de actualidad que requiere de mucha colaboración ya que entender bien la información de que disponemos puede facilitar el estudio de futuros trabajos.
 
 
-##Carga incial
+## Carga incial
 
 Una vez obtenido el dataset el primer paso sería cargar los datos, entender de que tipo de información disponemos, analizar las variables y realizar un primer análisis de la información para ver la calidad de los datos y obtener las primeras conclusiones. 
 
@@ -129,10 +124,10 @@ if (!require('dplyr')) install.packages('dplyr'); library('dplyr')
 
 
 ******
-# 2.Integración y selección de los datos de interés
+# 2. Integración y selección de los datos de interés
 ******
 
-##Análisis de variables
+## Análisis de variables
 
 En primer lugar comprobamos la estructura del fichero:
 
@@ -140,7 +135,7 @@ En primer lugar comprobamos la estructura del fichero:
 str(cervical_data)
 ```
 
-Se puede observar como existen 858 observación y un total de 36 variables que corresponden a los diferentes indicadores a tener en cuenta en la identificación del cancer de cuello de útero.
+Se puede observar como existen 858 observaciones y un total de 36 variables que corresponden a los diferentes indicadores a tener en cuenta en la identificación del cancer de cuello de útero.
 La descripción de las variables es la siguiente:
 
 **Age**
@@ -156,7 +151,7 @@ Edad a la que mantuvo su primera relación
 Número de embarazos
 
 **Smokes** 
-Indicador de si es fumador  (1/0)
+Indicador de si es fumadora  (1/0)
 
 **Smokes years** 
 Número de años siendo fumadora
@@ -252,12 +247,9 @@ Prueba Citologia (1/0)
 Prueba Biopsia (1/0)
 
 
-
-
 ### Selección de variables
 
 Una vez identificadas las variables, el siguiente paso sería realizar un proceso de limpieza de los datos. Descartarlos datos con mala calidad o que, a priori, pensemos no aportan mucho valor en los resultados esperados. En este caso concreto podríamos eliminar las columnas relacionadas a los diferentes tipos de ETS dejando únicamente el indicador general que informa si ha padecido alguna enfermedad de este tipo y guardar los datos en un subset adicional por si fuera necesario lanzar análisis más detallados en el futuro.
-
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
@@ -266,17 +258,15 @@ cervical_data_subset<-cervical_data[c(1:13,26:36)]
 
 
 ******
-# 3.Limpieza de datos
+# 3. Limpieza de datos
 ******
 
-##Transformación de variables
+## Transformación de variables
 
 Para poder obtener resultados estadísticos de los datos es necesario transformar algunos datos que viene como string a tipo entero.
 
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-
-
 cervical_data_subset$Number.of.sexual.partners<-as.integer(cervical_data_subset$Number.of.sexual.partners)
 cervical_data_subset$First.sexual.intercourse<-as.integer(cervical_data_subset$First.sexual.intercourse)
 cervical_data_subset$Smokes<-as.integer(cervical_data_subset$Smokes)
@@ -284,20 +274,18 @@ cervical_data_subset$Smokes..years.<-as.integer(cervical_data_subset$Smokes..yea
 cervical_data_subset$Num.of.pregnancies<-as.integer(cervical_data_subset$Num.of.pregnancies)
 ```
 
-Otro paso dentro de la limpieza de datos podría ser eliminar los datos redundantes o duplicados, en este caso concreto, al no tener ningún cambo que identifique al paciente como único aceptaremos la premisa de que diferentes pacientes pueden peteir diferentes valores y por lo tanto no eliminaremos los registros duplicados.
+Otro paso dentro de la limpieza de datos podría ser eliminar los datos redundantes o duplicados, en este caso concreto, al no tener ningún campo que identifique al paciente como único aceptaremos la premisa de que diferentes pacientes pueden repetir diferentes valores y por lo tanto no eliminaremos los registros duplicados.
 
 
 
-##Eliminación de valores nulos o no informados
+## 3.1. Eliminación de valores nulos o no informados
 
-Siguiendo con el proceso de limpieza, el siguiente paso sería identificar los valores nulos, no informados, o informados con caracteres extraños.
+Siguiendo con el proceso de limpieza, el siguiente paso sería identificar los valores nulos, no informados, o informados con caracteres extraños. En el caso de este dataset, se identifica que el caracter extraño más común es el signo de interrogación (?).
 
 Estadísticas de valores vacíos
 
 ```{r}
 colSums(is.na(cervical_data_subset))
-
-
 ```
 
 Estadísticas de valores nulos
@@ -306,23 +294,20 @@ Estadísticas de valores nulos
 colSums(cervical_data_subset=="")
 ```
 
-
 Estadísticas de valores informados con '?'
 
 ```{r}
 colSums(cervical_data_subset=="?")
-
 ```
 
 
-Una vez identificados, se procede a aplicar el tratamiento de falta de datos que más se adapte a cada tipo de dato teniendo en cuenta que un alto número de valores sin informar puede ser un indicador de incosistencia.Con ciertas variables podemos tomar el valor medio de los datos o el valor más repetido, en otros casos podemos tomar valores condicionales en base a la edad, por ejemplo si es fumador o no, fijando el valor NO para menores de 18 años. En otros casos es posible que nos convenga mantener los valores nulos y trabajar únicamente con el subset de datos informados como puede ser el indicador de si una persona estaba embarazada o no. 
+Una vez identificados, se procede a aplicar el tratamiento de falta de datos que más se adapte a cada tipo de dato teniendo en cuenta que un alto número de valores sin informar puede ser un indicador de incosistencia. Con ciertas variables podemos tomar el valor medio de los datos o el valor más repetido, en otros casos podemos tomar valores condicionales en base a la edad, por ejemplo si es fumador o no, fijando el valor NO para menores de 18 años. En otros casos es posible que nos convenga mantener los valores nulos y trabajar únicamente con el subset de datos informados como puede ser el indicador de si una persona estaba embarazada o no. 
 
-Antes de entrar a realizar tareas de transformación es conveniente categorizar las variables y comprobar que están informadas de un modo coherente. Por ejemplo, comprobar que los campos de edad no tiene valores muy elevados o caracteres en lugar de números, eliminar los espacios de las variables de tipo string, comprobar que los indicadores se informar únicamente con valores de 0 y 1...
+Antes de entrar a realizar tareas de transformación, es conveniente categorizar las variables y comprobar que están informadas de un modo coherente. Por ejemplo, comprobar que los campos de edad no tienen valores muy elevados o caracteres en lugar de números, eliminar los espacios de las variables de tipo string, comprobar que los indicadores se informar únicamente con valores de 0 y 1...
 
 Transformación de las variables Number of sexual partners y first sexual intercourse por la media:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-
 cervical_data_subset$Number.of.sexual.partners[is.na(cervical_data_subset$Number.of.sexual.partners)] <-mean(cervical_data_subset$Number.of.sexual.partners,na.rm=T)
 cervical_data_subset$First.sexual.intercourse[is.na(cervical_data_subset$First.sexual.intercourse)] <-mean(cervical_data_subset$First.sexual.intercourse,na.rm=T)
 ```
@@ -337,7 +322,7 @@ cervical_data_subset$IUD..years.<-as.integer(cervical_data_subset$IUD..years.)
 
 ```
 
-##Identificación y tratamiento de valores extremos
+## 3.2. Identificación y tratamiento de valores extremos
 
 A continuación se procede a normalizar el campo edad para poder realizar representaciónes gráficas de un modo más sencillo
 
@@ -347,11 +332,26 @@ summary(cervical_data_subset[,"Age"])
 cervical_data_subset["Age_segment"] <- cut(cervical_data_subset$Age, breaks = c(0,10,20,30,40,50,60,70,100), labels = c("13-21", "22-30", "31-39", "40-48","49-57","58-66","67-75","76-84"))
 ```
 
+Además, para la identificación de outliers o valores extremos, utilizamos diagramas de cajas. Aparentemente no se observan valores extremos que pudieran perjudicar un posterior modelo de clasificación.
+
+```{r}
+summary(cervical_data_subset)
+
+boxplot(cervical_data_subset$Age, main = "Age", width = 100)
+boxplot(cervical_data_subset$Number.of.sexual.partners, main = "Number of sexual partners", width = 100)
+boxplot(cervical_data_subset$First.sexual.intercourse, main = "First sexual intercourse", width = 100)
+boxplot(cervical_data_subset$Num.of.pregnancies, main = "Number of pregnancies", width = 100)
+boxplot(cervical_data_subset$Smokes..years., main = "Smokes (years)", width = 100)
+boxplot(cervical_data_subset$IUD..years., main = "IUD (years)", width = 100)
+boxplot(cervical_data_subset$STDs..Number.of.diagnosis, main = "STDs number of diagnosis", width = 100)
+```
+
+
 ******
 # 4. Análisis de los datos
 ******
 
-##Selección de los datos
+## 4.1. Selección de los datos
 
 Precisamos un primer set de datos para continuar con los análisis escogemos las variables más significativas como edad segmentada, variables relacionadas con el tabaco, los metodos hormonales y dispositivos intrauterinos Y 
 
@@ -381,7 +381,7 @@ aggregate(Smokes..years.~Age_segment, data = analisis_subset, FUN = var)
 ```
 A la vista de los resultados podemos ver como la hipótesis del apartado anterior era cierta y existen grupos con mucha más cantidad de muestras y valor acumulado
 
-A continuación utilizamos el test de Levene.Se caracteriza, además de por poder comparar 2 o más poblaciones, por permitir elegir entre diferentes estadísticos de centralidad :mediana (por defecto), media, media truncada. Esto es importante a la hora de contrastar la homocedasticidad dependiendo de si los grupos se distribuyen de forma normal o no.
+A continuación utilizamos el test de Levene. Se caracteriza, además de por poder comparar 2 o más poblaciones, por permitir elegir entre diferentes estadísticos de centralidad :mediana (por defecto), media, media truncada. Esto es importante a la hora de contrastar la homocedasticidad dependiendo de si los grupos se distribuyen de forma normal o no.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -393,10 +393,8 @@ leveneTest(y = analisis_subset$Smokes..years., group = analisis_subset$Age_segme
 
 El test de Levene Test encuentra diferencias significativas entre los diferentes grupos 
 
-
-
-
 A continuación análizamos los grupos de edad con los años de utilización de un dispositivo intra uterino.
+
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
 
@@ -407,7 +405,7 @@ ggplot(data = analisis_subset, aes(x = Age_segment, y = IUD..years., colour = Ag
   theme(legend.position = "none")
 ```
 
-En este caso vemos como las distribuciones son similares al caso anterior. aunque a priorí parecen más homogeneas en el resto de grupos excepto en los extremos.
+En este caso vemos como las distribuciones son similares al caso anterior, aunque a priori parecen más homogeneas en el resto de grupos excepto en los extremos.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -416,7 +414,7 @@ leveneTest(y = analisis_subset$IUD..years., group = analisis_subset$Age_segment 
 
 ```
 
-##Supuesto de normalidad
+## Supuesto de normalidad
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -424,7 +422,7 @@ qqnorm( analisis_subset$Age ) # la nube de puntos
 qqline( analisis_subset$Age ) # la recta
 ```
 
-##Contraste de hipótesis
+## Contraste de hipótesis
 Realizamos un contraste de hipótesis para un valor de media de edad de 27 años.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
@@ -436,7 +434,7 @@ t.test( analisis_subset$Age,
 Con un valor de p-value = 0.536 mayor que 0.05 no podemos rechazar la hipótesis nula.
 
 
-##Supuesto de homocedasticidad
+## Supuesto de homocedasticidad
 
 En este caso llevamos a cabo el supuesto entre personas fumadoras o no fumadoras
 
@@ -455,19 +453,22 @@ Con un valor de p-value = 0,003878 menor que 0,05 podemos rechazar la hipótesis
 ******
 # 5. Representación de los resultados
 ******
-##Representación gráfica
+
+## Representación gráfica
 Para entender los datos más en profundidad procedemos a realizar varias representaciones gráficas para obtener una visión más general de como se distribuye la información, de este modo nos será más sencillo identificar la naturaleza de los datos.
 
-Distribución de los grupos de edad
+Distribución de los grupos de edad:
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
  plot(cervical_data_subset$Age_segment)
 ```
+
 Representación de los grupos de edad en base a si son fumadores o no:
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
 ggplot(data=cervical_data_subset[1:rows,],aes(x=Smokes ,fill=Age_segment))+geom_bar()
 ```
-En la grafica vemos como muchos más casos corresponden a personas no fumadoras independiente del rango de edad ya que este se distribuye de acuerdo a la distribución anterior por grupos de edad, en todos los grupos encontramos personas fumadoras excepto en el grupo 0 de 13 a 21 años. En este caso quizás podría darnos pie a pensar que el tabaco no es un factor de riesgo en este tipo de cancer pero habría que confirmarlo con análisis más avanzados.
+
+En la grafica vemos como muchos más casos corresponden a personas no fumadoras independiente del rango de edad ya que este se distribuye de acuerdo a la distribución anterior por grupos de edad, en todos los grupos encontramos personas fumadoras excepto en el grupo 0, de 13 a 21 años. En este caso quizás podría darnos pie a pensar que el tabaco no es un factor de riesgo en este tipo de cancer pero habría que confirmarlo con análisis más avanzados.
 
 
 Representación de los grupos de edad en base a si son fumadores o no:
@@ -477,8 +478,11 @@ ggplot(data=cervical_data_subset[1:rows,],aes(x=IUD ,fill=Age_segment))+geom_bar
 ```
 
 ******
-# 6. Resolución de problemas
+# 6. Resolución del problema y conclusiones
 ******
 
-Una vez analizado el dataset en profundidad se abre un amplio número de posibilidades.Por ejemplo, seríamos capaces de identificar diferentes agrupaciones en base a las variables descritas y lanzar las campañas de concienciación personalizadas a los grupos más numerosos.
-Una vez establecida la clasificación sería necesario **analizar la calidad del modelo** para identificar que efectivamente los sujetos dentro de cada grupo tienen similitudes, existen diferencias entre los diferentes grupos y la distancia de cada muestra con el centro de su cluster es apropiada para definir un buen nivel de calidad. Por último, una vez establecido el modelo y teniendo en cuenta que todas las mujeres que se encuentran en el dataset han sufrido cáncer. Si hemos sido capaces de identificar grupos con características comunes con un aceptable nivel de calidad, seremos capaces de **lanzar campañas de prevención personalizadas** lo más efectivas posible. Un posible resultado podría ser por un lado, proponer a las mujeres de entre 30 y 40 que no utilicen dispositivo intrauterino; por otro lado, proponer la realización de pruebas diagnosticas gratuitas a las mujeres de entre 20 y 30 que nunca se han realizado pruebas  con anterioridad y una tercera campaña podría ir dirigida a las personas mayores de 40 años que han fumado durante más de 5 años para que dejen de fumar y concienciarles de los riesgos de seguir fumando.
+Una vez analizado el dataset en profundidad se abre un amplio número de posibilidades. Por ejemplo, seríamos capaces de identificar diferentes agrupaciones en base a las variables descritas y lanzar las campañas de concienciación personalizadas a los grupos más numerosos.
+
+Una vez establecida la clasificación sería necesario **analizar la calidad del modelo** para identificar que efectivamente los sujetos dentro de cada grupo tienen similitudes, existen diferencias entre los diferentes grupos y la distancia de cada muestra con el centro de su cluster es apropiada para definir un buen nivel de calidad. Por último, una vez establecido el modelo y teniendo en cuenta que todas las mujeres que se encuentran en el dataset han sufrido cáncer. 
+
+Si hemos sido capaces de identificar grupos con características comunes con un aceptable nivel de calidad, seremos capaces de **lanzar campañas de prevención personalizadas** lo más efectivas posible. Un posible resultado podría ser por un lado, proponer a las mujeres de entre 30 y 40 que no utilicen dispositivo intrauterino; por otro lado, proponer la realización de pruebas diagnósticas gratuitas a las mujeres de entre 20 y 30 que nunca se han realizado pruebas  con anterioridad y una tercera campaña podría ir dirigida a las personas mayores de 40 años que han fumado durante más de 5 años para que dejen de fumar y concienciarles de los riesgos de seguir fumando.
