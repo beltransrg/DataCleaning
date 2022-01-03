@@ -109,7 +109,7 @@ Una vez obtenido el dataset el primer paso sería cargar los datos, entender de 
 Para poder ilustrar el ejemplo, cargamos el fichero de datos
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-cervical_data <- read.csv('kag_risk_factors_cervical_cancer.csv',stringsAsFactors = FALSE)
+cervical_data <- read.csv('../data/kag_risk_factors_cervical_cancer.csv',stringsAsFactors = FALSE)
 rows=dim(cervical_data)[1]
 ```
 
@@ -479,7 +479,7 @@ ggplot(data=cervical_data_subset[1:rows,],aes(x=IUD ,fill=Age_segment))+geom_bar
 Por último, generamos un fichero CSV con el resultado del proceso de análisis y limpieza de datos.
 
 ```{r}
-write.csv(analisis_subset,"kag_risk_factors_cervical_cancer_out.csv", row.names = TRUE)
+write.csv(analisis_subset,"../data/kag_risk_factors_cervical_cancer_out.csv", row.names = TRUE)
 ```
 
 ******
@@ -491,3 +491,13 @@ Una vez analizado el dataset en profundidad se abre un amplio número de posibil
 Una vez establecida la clasificación sería necesario **analizar la calidad del modelo** para identificar que efectivamente los sujetos dentro de cada grupo tienen similitudes, existen diferencias entre los diferentes grupos y la distancia de cada muestra con el centro de su cluster es apropiada para definir un buen nivel de calidad. Por último, una vez establecido el modelo y teniendo en cuenta que todas las mujeres que se encuentran en el dataset han sufrido cáncer. 
 
 Si hemos sido capaces de identificar grupos con características comunes con un aceptable nivel de calidad, seremos capaces de **lanzar campañas de prevención personalizadas** lo más efectivas posible. Un posible resultado podría ser por un lado, proponer a las mujeres de entre 30 y 40 que no utilicen dispositivo intrauterino; por otro lado, proponer la realización de pruebas diagnósticas gratuitas a las mujeres de entre 20 y 30 que nunca se han realizado pruebas  con anterioridad y una tercera campaña podría ir dirigida a las personas mayores de 40 años que han fumado durante más de 5 años para que dejen de fumar y concienciarles de los riesgos de seguir fumando.
+
+******
+# 7. Tabla de contribuciones
+******
+
+| Contribuciones      | Firma |
+| ----------- | ----------- |
+| Investigación previa      | SBN, BLG       |
+| Redacción de las respuestas   | SBN, BLG        |
+| Desarrollo del código   | SBN, BLG        |
