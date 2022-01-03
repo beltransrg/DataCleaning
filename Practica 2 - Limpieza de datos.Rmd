@@ -353,11 +353,10 @@ boxplot(cervical_data_subset$STDs..Number.of.diagnosis, main = "STDs number of d
 
 ## 4.1. Selección de los datos
 
-Precisamos un primer set de datos para continuar con los análisis escogemos las variables más significativas como edad segmentada, variables relacionadas con el tabaco, los metodos hormonales y dispositivos intrauterinos Y 
+Precisamos un primer set de datos para continuar con los análisis escogemos las variables más significativas como edad segmentada, variables relacionadas con el tabaco, los metodos hormonales y dispositivos intrauterinos.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-
-analisis_subset<-cervical_data_subset[c(1,25,5:13)]
+analisis_subset<-cervical_data_subset[c(1,25,5:13,17:20)]
 str(analisis_subset)
 ```
 A continuación pasamos a realizar una muestra de homogeneidad entre los grupos de edad y los años consecutivos fumandos.
@@ -475,6 +474,12 @@ Representación de los grupos de edad en base a si son fumadores o no:
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
 ggplot(data=cervical_data_subset[1:rows,],aes(x=IUD ,fill=Age_segment))+geom_bar()
+```
+
+Por último, generamos un fichero CSV con el resultado del proceso de análisis y limpieza de datos.
+
+```{r}
+write.csv(analisis_subset,"kag_risk_factors_cervical_cancer_out.csv", row.names = TRUE)
 ```
 
 ******
